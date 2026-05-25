@@ -25,9 +25,13 @@
             // Aquí después irá el fetch al backend
         };
 
+
+
         return (
             <div className="admin-container">
-                <h1 className="admin-title">Crear Noticia</h1>
+                <h1 className="admin-title">Administrar Noticias</h1>
+
+                <h2>Crear nueva noticia</h2>
 
                 <form onSubmit={handleSubmit} className="admin-form">
 

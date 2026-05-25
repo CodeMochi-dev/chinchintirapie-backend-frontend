@@ -1,12 +1,13 @@
+import {Outlet} from "react-router-dom";
 import AdminSidebar from '../../components/AdminSidebar';
 import '../../styles/Admin.css';
 
-function AdminLayout({ children }) {
+function AdminLayout() {
     return (
         <div className="admin-layout">
             <AdminSidebar />
             <div className="admin-content">
-                {children}
+                <Outlet />
             </div>
         </div>
     );
