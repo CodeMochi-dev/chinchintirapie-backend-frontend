@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { REPO_ITEMS } from '../data/repositorioData';
 import PageHero from '../components/PageHero';
-import './styles/RepositorioDetail.css';
+import '../styles/RepositorioDetail.css';
 
 export default function RepositorioDetail() {
   const { id } = useParams();
