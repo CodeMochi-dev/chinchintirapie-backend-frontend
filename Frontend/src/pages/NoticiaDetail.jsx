@@ -44,7 +44,13 @@ export default function NoticiaDetail() {
       <div className="noticia-detail">
         <Link to="/noticias" className="back-link">← Volver a Noticias</Link>
         {noticia.urlPhoto ? (
-          <img src={noticia.urlPhoto} alt={noticia.title} className="noticia-media" />
+          noticia.urlPhoto.match(/\.(mp4|webm|ogg)$/i) ? (
+            <video controls src={noticia.urlPhoto} className="noticia-media" style={{ background: '#000' }} />
+          ) : noticia.urlPhoto.includes('youtube.com/') || noticia.urlPhoto.includes('youtu.be/') ? (
+            <iframe src={noticia.urlPhoto.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/')} className="noticia-media" style={{ border: 'none', height: '400px' }} allowFullScreen title={noticia.title} />
+          ) : (
+            <img src={noticia.urlPhoto} alt={noticia.title} className="noticia-media" />
+          )
         ) : (
           <div className="noticia-media" style={{ background: 'linear-gradient(135deg, var(--rojo), var(--naranja))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '4rem', minHeight: '300px' }}>📰</div>
         )}

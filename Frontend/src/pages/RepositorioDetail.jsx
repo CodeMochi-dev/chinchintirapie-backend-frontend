@@ -59,7 +59,15 @@ export default function RepositorioDetail() {
 
         <div className="repo-detail-preview">
           {item.url ? (
-            <img src={item.url} alt={item.title} style={{ width: '100%', maxHeight: '500px', objectFit: 'cover', borderRadius: '16px', marginBottom: '1.5rem' }} />
+            item.url.match(/\.(mp4|webm|ogg)$/i) ? (
+              <video controls src={item.url} style={{ width: '100%', maxHeight: '500px', borderRadius: '16px', marginBottom: '1.5rem', background: '#000' }} />
+            ) : item.url.includes('youtube.com/embed/') ? (
+              <iframe src={item.url} style={{ width: '100%', height: '400px', borderRadius: '16px', marginBottom: '1.5rem', border: 'none' }} allowFullScreen title={item.title} />
+            ) : item.url.includes('youtube.com/watch?v=') || item.url.includes('youtu.be/') ? (
+              <iframe src={item.url.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/')} style={{ width: '100%', height: '400px', borderRadius: '16px', marginBottom: '1.5rem', border: 'none' }} allowFullScreen title={item.title} />
+            ) : (
+              <img src={item.url} alt={item.title} style={{ width: '100%', maxHeight: '500px', objectFit: 'cover', borderRadius: '16px', marginBottom: '1.5rem' }} />
+            )
           ) : (
             <div className="repo-detail-emoji">📂</div>
           )}
