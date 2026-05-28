@@ -1,5 +1,5 @@
 .page-hero {
-  padding: 4rem 2rem 2rem;
+  padding: 3rem 1rem 2rem;
   text-align: center;
   background: var(--crema, #fdf6e3);
   position: relative;
@@ -35,11 +35,12 @@
 
 .page-hero h1 {
   font-family: var(--font-titulo);
-  font-size: clamp(3rem, 5vw, 4.5rem);
+  font-size: clamp(2.4rem, 6vw, 4rem);
   color: var(--oscuro, #2c1a0e);
   line-height: 1.1;
   margin-bottom: 1rem;
   letter-spacing: 2px;
+  max-width: 100%;
 }
 
 .page-hero h1 em {
@@ -49,8 +50,23 @@
 
 .page-hero p {
   color: var(--oscuro);
-  font-size: 1.2rem;
-  max-width: 650px;
+  font-size: clamp(1rem, 3vw, 1.2rem);
+  max-width: min(100%, 620px);
   margin: 0 auto;
-  line-height: 1.6;
+  line-height: 1.75;
+}
+
+@media (max-width: 640px) {
+  .page-hero {
+    padding: 2.5rem 1rem 1.5rem;
+  }
+
+  .page-hero h1 {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+
+  .page-hero p {
+    font-size: 1rem;
+    padding: 0 0.5rem;
+  }
 }

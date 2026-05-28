@@ -6,22 +6,18 @@ const STORY_CARDS = [
   {
     title: 'Origen y rebeldía',
     body: 'Lo que hoy ves estallar en la calle con challa y sudor, nació de un susurro ancestral y un acto de rebeldía en la Plaza de Armas en 2005. Allí, entre el asfalto y la bota policial, Rosita Jiménez entendió que el Chinchín no era un accesorio; era el Tambor Callejero Original y Genuino de este país.',
-    className: 'story-card-feature',
   },
   {
     title: 'De la resistencia a la escuela',
     body: 'Fundada oficialmente el 23 de julio de 2006, la Escuela Carnavalera Chinchintirapié no nació para ser una academia, sino una trinchera de creación social. Somos una organización autogestionada y sin fines de lucro que decidió que la cultura no se pide, se toma.',
-    className: '',
   },
   {
     title: 'Aprender-haciendo la fiesta',
     body: 'No buscamos virtuosos, buscamos comunidad. Nuestra propuesta musical no imita ritmos ajenos; construye sobre el latido del Chinchín. Resignificamos la cueca, la cumbia y el huaino para devolverle al pueblo su derecho a la fiesta.',
-    className: 'accent-card',
   },
   {
     title: '20 años de identidad innegociable',
     body: 'Desde la Pincoya hasta el Paseo Ahumada, desde los Mil Tambores hasta la Población El Volcán, hemos regado la ciudad con una verdad incómoda para el sistema: somos dueños de nuestra alegría. Somos una escuela sin paredes.',
-    className: 'wide-card',
   },
 ];
 
@@ -71,8 +67,8 @@ export default function Historia() {
               <h2>CHINCHINTIRAPIÉ: LA MAQUINARIA DEL TAMBOR PRIMARIO</h2>
             </div>
             <div className="story-grid">
-              {STORY_CARDS.map(({ title, body, className }) => (
-                <article key={title} className={`story-card ${className}`}>
+              {STORY_CARDS.map(({ title, body }) => (
+                <article key={title} className="story-card">
                   <h3 className="story-card-title">{title}</h3>
                   <p className="story-card-copy">{body}</p>
                 </article>
