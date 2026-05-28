@@ -1,19 +1,33 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useReveal } from '../hooks/useReveal';
 import PageHero from '../components/PageHero';
 import Ticker from '../components/Ticker';
-
 import { Link } from 'react-router-dom';
-import { ARTICLES, TIMELINE, DOWNLOADS, TOPICS, FILTERS, STATS } from '../data/cedocData';
+import MediaThumbnail from '../components/MediaThumbnail';
+import multimediaService from '../services/multimediaService';
+import { TIMELINE, DOWNLOADS, TOPICS, STATS } from '../data/cedocData';
+import '../styles/Cedoc.css';
 
 
 export default function CEDOC() {
-  const [activeFilter, setActiveFilter] = useState('all');
-  useReveal();
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  useReveal([articles]);
 
-  const visibleArticles = activeFilter === 'all'
-    ? ARTICLES
-    : ARTICLES.filter((a) => a.tags.some((t) => t.toLowerCase() === activeFilter));
+  useEffect(() => {
+    const fetchCedoc = async () => {
+      try {
+        const data = await multimediaService.fetchByType('CEDOC');
+        setArticles(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCedoc();
+  }, []);
 
   return (
     <>
@@ -36,20 +50,6 @@ export default function CEDOC() {
         ))}
       </div>
 
-      {/* Filtros */}
-      <div className="filter-tabs">
-        {FILTERS.map((f) => (
-          <button
-            key={f}
-            className={`filter-tab${activeFilter === f ? ' active' : ''}`}
-            onClick={() => setActiveFilter(f)}
-          >
-            {f === 'all' ? 'Todos' : f === 'banda' ? '🎺 Banda' : f === 'baile' ? '💃 Baile'
-              : f === 'figura' ? '🎭 Figura' : f === 'historia' ? '📜 Historia' : '🏘️ Comunidad'}
-          </button>
-        ))}
-      </div>
-
       {/* Main Layout */}
       <main>
         <div className="cedoc-layout">
@@ -57,36 +57,23 @@ export default function CEDOC() {
           <div className="cedoc-main">
             <section>
               <h2>✦ Artículos Destacados</h2>
-              {visibleArticles.filter((a) => a.status === 'published').map((a) => (
-                <Link to={`/cedoc/${a.id}`} key={a.id} style={{ textDecoration: 'none', color: 'inherit' }}>
+              {loading && <p>Cargando artículos...</p>}
+              {error && <p className="error">{error}</p>}
+              {!loading && !error && articles.length === 0 && <p>No hay artículos disponibles.</p>}
+              {!loading && !error && articles.map((a) => (
+                <Link to={`/cedoc/${a.id}`} key={a.id} className="link-reset">
                   <div className="article-card reveal">
-                    <div className="article-icon" style={a.iconStyle}>{a.icon}</div>
+                    <div className="article-icon" style={a.url ? { padding: 0, overflow: 'hidden', background: 'transparent', borderRadius: '12px' } : { background: 'linear-gradient(135deg, var(--purpura), var(--azul))' }}>
+                      <MediaThumbnail url={a.url} alt={a.title} typeEmoji="📚" />
+                    </div>
                     <div className="article-body">
                       <h3>{a.title}</h3>
-                      <p>{a.desc}</p>
+                      <p>{a.description}</p>
                       <div className="article-meta">
-                        {a.tags.map((t) => <span className="meta-tag" key={t}>{t}</span>)}
+                        {a.categories && a.categories.map((t) => <span className="meta-tag" key={t}>{t}</span>)}
+                        <span className="meta-tag">CEDOC</span>
                       </div>
                       <button type="button" className="download-btn">⬇ Ver artículo completo</button>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </section>
-
-            <section>
-              <h2>🔬 Investigaciones en Curso</h2>
-              {visibleArticles.filter((a) => a.status === 'in-progress').map((a) => (
-                <Link to={`/cedoc/${a.id}`} key={a.id} style={{ textDecoration: 'none', color: 'inherit' }}>
-                  <div className="article-card reveal">
-                    <div className="article-icon" style={a.iconStyle}>{a.icon}</div>
-                    <div className="article-body">
-                      <h3>{a.title}</h3>
-                      <p>{a.desc}</p>
-                      <div className="article-meta">
-                        {a.tags.map((t) => <span className="meta-tag" key={t}>{t}</span>)}
-                      </div>
-                      <button type="button" className="download-btn" style={{ background: 'var(--dorado)', color: 'var(--oscuro)' }}>👁 Ver avance completo</button>
                     </div>
                   </div>
                 </Link>
@@ -110,15 +97,11 @@ export default function CEDOC() {
 
             <div className="sidebar-widget reveal">
               <h3>📄 Descargas Rápidas</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '.7rem' }}>
+              <div className="download-list">
                 {DOWNLOADS.map(({ emoji, label, size, gold }) => (
-                  <button key={label} type="button" className="download-btn"
-                    style={{
-                      justifyContent: 'space-between',
-                      ...(gold ? { background: 'var(--dorado)', color: 'var(--oscuro)' } : {}),
-                    }}>
+                  <button key={label} type="button" className={`download-btn${gold ? ' download-btn--gold' : ''}`}>
                     <span>{emoji} {label}</span>
-                    <span style={{ fontSize: '.7rem', opacity: .7 }}>{size}</span>
+                    <span className="download-meta">{size}</span>
                   </button>
                 ))}
               </div>
@@ -126,20 +109,19 @@ export default function CEDOC() {
 
             <div className="sidebar-widget reveal">
               <h3>🏷 Temas de Investigación</h3>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.5rem' }}>
+              <div className="tag-row">
                 {TOPICS.map((t) => (
-                  <span key={t} className="meta-tag" style={{ fontSize: '.82rem', padding: '.3rem .7rem' }}>{t}</span>
+                  <span key={t} className="meta-tag topic-pill">{t}</span>
                 ))}
               </div>
             </div>
 
-            <div className="sidebar-widget reveal" style={{ background: 'var(--oscuro)', border: '2px solid var(--dorado)' }}>
-              <h3 style={{ color: 'var(--amarillo)' }}>✉ Envía tu Investigación</h3>
-              <p style={{ fontSize: '.85rem', color: 'rgba(255,255,255,.7)', lineHeight: 1.6, marginBottom: '1rem' }}>
+            <div className="sidebar-widget reveal sidebar-widget--dark">
+              <h3>✉ Envía tu Investigación</h3>
+              <p>
                 ¿Tienes una investigación sobre carnaval y cultura popular? El CEDOC recibe colaboraciones externas.
               </p>
-              <a href="mailto:cedoc@chinchintirapie.cl" className="download-btn"
-                style={{ background: 'var(--rojo)', color: '#fff', display: 'block', textAlign: 'center' }}>
+              <a href="mailto:chinchintirapie@gmail.com" className="download-btn download-btn--solid">
                 📨 Enviar propuesta
               </a>
             </div>

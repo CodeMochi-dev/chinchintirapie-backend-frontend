@@ -1,30 +1,65 @@
 import { useParams, Link } from 'react-router-dom';
-import { ARTICLES } from '../data/cedocData';
+import { useState, useEffect } from 'react';
+import multimediaService from '../services/multimediaService';
 import PageHero from '../components/PageHero';
+import '../styles/CedocDetail.css';
 
 export default function CEDOCDetail() {
   const { id } = useParams();
-  const article = ARTICLES.find((a) => a.id === id);
+  const [article, setArticle] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  if (!article) return <div style={{ textAlign: 'center', padding: '5rem' }}><h2>Artículo no encontrado</h2><Link to="/cedoc">Volver</Link></div>;
+  useEffect(() => {
+    const fetchArticle = async () => {
+      try {
+        const data = await multimediaService.fetchById(id);
+        setArticle(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchArticle();
+  }, [id]);
+
+  if (loading) return (
+    <div className="page-empty-state">
+      <h2>Cargando...</h2>
+    </div>
+  );
+
+  if (error || !article) return (
+    <div className="page-empty-state">
+      <h2>Artículo no encontrado</h2>
+      <p>{error}</p>
+      <Link to="/cedoc" className="page-back-link">Volver</Link>
+    </div>
+  );
 
   return (
     <>
-      <PageHero badge={article.status === 'published' ? '📄 Artículo' : '🔬 Investigación en proceso'} title={article.title} description="" />
-      <div style={{ maxWidth: 800, margin: '4rem auto', padding: '0 2rem' }}>
-        <Link to="/cedoc" style={{ display: 'inline-block', marginBottom: '2rem', color: 'var(--purpura)', fontWeight: 'bold', textDecoration: 'none' }}>← Volver al CEDOC</Link>
-        <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start' }}>
-          <div className="article-icon" style={{ ...article.iconStyle, width: 100, height: 100, fontSize: '3rem' }}>{article.icon}</div>
-          <div>
-            <div style={{ display: 'flex', gap: '.5rem', marginBottom: '1rem' }}>
-              {article.tags.map((t) => <span key={t} className="meta-tag">{t}</span>)}
-            </div>
-            <p style={{ fontSize: '1.2rem', lineHeight: 1.8, color: '#444', marginBottom: '2rem' }}>{article.desc}</p>
-            {article.status === 'published' ? (
-               <button className="download-btn">⬇ Descargar Documento Completo (PDF)</button>
+      <PageHero badge="📄 CEDOC" title={article.title} description="" />
+      <div className="page-container">
+        <Link to="/cedoc" className="page-back-link">← Volver al CEDOC</Link>
+        <div className="detail-page-row">
+          <div className="article-icon detail-article-icon" style={article.url ? { padding: 0, overflow: 'hidden', background: 'transparent' } : { background: 'linear-gradient(135deg, var(--purpura), var(--azul))' }}>
+            {article.url ? (
+              <img src={article.url} alt={article.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (
-               <button className="download-btn" style={{ background: 'var(--dorado)', color: 'var(--oscuro)' }}>👁 Solicitar Avance de Investigación</button>
+              "📚"
             )}
+          </div>
+          <div>
+            <div className="tag-row">
+              {article.categories && article.categories.map((t) => <span key={t} className="meta-tag topic-pill">{t}</span>)}
+              <span className="meta-tag topic-pill">CEDOC</span>
+            </div>
+            <p className="detail-article-description">{article.description}</p>
+            <p style={{ marginTop: '1rem', color: '#999', fontSize: '.9rem' }}>
+              Por {article.author} · {article.uploadedAt ? new Date(article.uploadedAt).toLocaleDateString() : ''}
+            </p>
           </div>
         </div>
       </div>

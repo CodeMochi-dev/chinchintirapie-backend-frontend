@@ -1,40 +1,55 @@
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { useReveal } from '../hooks/useReveal';
 import PageHero from '../components/PageHero';
 import Ticker from '../components/Ticker';
-import { EDU_ITEMS } from '../data/educativoData';
+import MediaThumbnail from '../components/MediaThumbnail';
+import multimediaService from '../services/multimediaService';
+import '../styles/MaterialEducativo.css';
 
 export default function MaterialEducativo() {
-  useReveal();
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  useReveal([items]);
+
+  useEffect(() => {
+    const fetchMaterial = async () => {
+      try {
+        const data = await multimediaService.fetchByType('MATERIAL_EDUCATIVO');
+        setItems(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMaterial();
+  }, []);
+
   return (
     <>
       <Ticker text="📚 Material Educativo · Guías · Manuales · Cuadernos · Para todos los niveles" />
       <PageHero badge="📚 Recursos Pedagógicos" title="Material Educativo" description="Guías, manuales, partituras y cuadernos pedagógicos desarrollados por la escuela para compartir el saber carnavalero." />
-      <section style={{ padding: '4rem 2rem', background: 'var(--crema)' }}>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-          gap: '1.5rem',
-          maxWidth: 1100,
-          margin: '0 auto',
-        }}>
-          {EDU_ITEMS.map(({ id, emoji, title, type, level, pages }) => (
-            <Link to={`/material-educativo/${id}`} key={id} style={{ textDecoration: 'none', color: 'inherit' }}>
-              <article className="reveal" style={{
-                background: '#fff',
-                borderRadius: 16,
-                overflow: 'hidden',
-                boxShadow: '0 8px 24px rgba(0,0,0,.07)',
-              }}>
-                <div style={{
-                  height: 120, background: 'linear-gradient(135deg, var(--oscuro), #5a3e2b)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3.5rem',
-                }}>{emoji}</div>
-                <div style={{ padding: '1.2rem' }}>
-                  <span className="media-tag">{type}</span>
-                  <h3 style={{ fontFamily: 'Boogaloo, cursive', fontSize: '1.1rem', color: 'var(--oscuro)', margin: '.4rem 0' }}>{title}</h3>
-                  <p style={{ fontSize: '.8rem', color: '#7a5c40', marginBottom: '.8rem' }}>Nivel: {level} · {pages}</p>
-                  <button type="button" className="download-btn" style={{ width: '100%', justifyContent: 'center' }}>⬇ Ver Detalles</button>
+      <section className="material-section">
+        <div className="material-grid">
+          {loading && <p>Cargando material...</p>}
+          {error && <p className="error">{error}</p>}
+          {!loading && !error && items.length === 0 && <p>No hay material educativo disponible.</p>}
+          {!loading && !error && items.map((item) => (
+            <Link to={`/material-educativo/${item.id}`} key={item.id} className="material-link">
+              <article className="edu-card reveal">
+                <div className="edu-card-top" style={item.url ? { padding: 0, overflow: 'hidden', background: 'transparent' } : {}}>
+                  <MediaThumbnail url={item.url} alt={item.title} typeEmoji="✏️" />
+                </div>
+                <div className="edu-card-body">
+                  <span className="media-tag">Material Educativo</span>
+                  <h3>{item.title}</h3>
+                  <p className="edu-card-meta">
+                    {item.author && `Por ${item.author}`}
+                    {item.year && ` · ${item.year}`}
+                  </p>
+                  <button type="button" className="download-btn material-download-btn">⬇ Ver Detalles</button>
                 </div>
               </article>
             </Link>

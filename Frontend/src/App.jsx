@@ -14,14 +14,27 @@ const CEDOC           = lazy(() => import('./pages/CEDOC.jsx'))
 const Contacto        = lazy(() => import('./pages/Contacto.jsx'))
 const Tienda          = lazy(() => import('./pages/Tienda.jsx'))
 const Login           = lazy(() => import('./pages/Login.jsx'))
+const RecuperarPassword = lazy(() => import('./pages/RecuperarPassword.jsx'))
+const ResetPassword   = lazy(() => import('./pages/ResetPassword.jsx'))
 
 // ADMIN
+const AdminDashboard = lazy(() => import('./pages/Admin/AdminDashboard.jsx'))
 const NoticiasAdmin = lazy(() => import('./pages/Admin/NoticiasAdmin.jsx'))
 const AdminLayout   = lazy(() => import('./pages/Admin/AdminLayout.jsx'))
 const NoticiasList  = lazy(() => import('./pages/Admin/NoticiasList.jsx'))
 
 const AdminList = lazy(() => import('./pages/Admin/AdminList.jsx'))
 const AdminForm = lazy(() => import('./pages/Admin/AdminForm.jsx'))
+const CronicasAdmin = lazy(() => import('./pages/Admin/CronicasAdmin.jsx'))
+const CronicasList  = lazy(() => import('./pages/Admin/CronicasList.jsx'))
+const UsuariosAdmin = lazy(() => import('./pages/Admin/UsuariosAdmin.jsx'))
+const UsuariosList  = lazy(() => import('./pages/Admin/UsuariosList.jsx'))
+const MaterialAdmin = lazy(() => import('./pages/Admin/MaterialAdmin.jsx'))
+const MaterialList  = lazy(() => import('./pages/Admin/MaterialList.jsx'))
+const RepositorioAdmin = lazy(() => import('./pages/Admin/RepositorioAdmin.jsx'))
+const RepositorioList  = lazy(() => import('./pages/Admin/RepositorioList.jsx'))
+const CedocAdmin = lazy(() => import('./pages/Admin/CedocAdmin.jsx'))
+const CedocList  = lazy(() => import('./pages/Admin/CedocList.jsx'))
 
 // OTRAS PÁGINAS
 const Cronicas           = lazy(() => import('./pages/Cronicas.jsx'))
@@ -42,7 +55,7 @@ function PageLoader() {
             alignItems: 'center',
             justifyContent: 'center',
             minHeight: '60vh',
-            fontFamily: 'Bangers, cursive',
+            fontFamily: 'var(--font-titulo)',
             fontSize: '2rem',
             letterSpacing: 3,
             color: 'var(--purpura)',
@@ -53,12 +66,14 @@ function PageLoader() {
 }
 
 function Layout() {
-    const { pathname } = useLocation()
-    const isLogin = pathname === '/login'
+    const { pathname, hash } = useLocation()
+    const isLogin = pathname.startsWith('/login') || pathname.startsWith('/recuperar-password') || pathname.startsWith('/reset-password')
 
     useEffect(() => {
-        window.scrollTo(0, 0)
-    }, [pathname])
+        if (!hash) {
+            window.scrollTo(0, 0)
+        }
+    }, [pathname, hash])
 
     return (
         <>
@@ -79,6 +94,8 @@ function Layout() {
                     <Route path="/contacto" element={<Contacto />} />
                     <Route path="/tienda" element={<Tienda />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/recuperar-password" element={<RecuperarPassword />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
 
                     {/* DETALLES */}
                     <Route path="/noticias/:id" element={<NoticiaDetail />} />
@@ -91,11 +108,7 @@ function Layout() {
                     <Route path="/admin" element={<AdminLayout />}>
                         <Route
                             index
-                            element={
-                                <h1 className="admin-title">
-                                    Bienvenido al Panel de Administrador
-                                </h1>
-                            }
+                            element={<AdminDashboard />}
                         />
 
                         {/* NOTICIAS */}
@@ -103,38 +116,38 @@ function Layout() {
                         <Route path="noticias/editar" element={<NoticiasList />} />
 
                         {/* CRÓNICAS */}
-                        <Route path="cronicas" element={<AdminForm tipo="crónica" />} />
-                        <Route path="cronicas/editar" element={<AdminList tipo="cronicas" />} />
+                        <Route path="cronicas" element={<CronicasAdmin />} />
+                        <Route path="cronicas/editar" element={<CronicasList />} />
 
                         {/* MATERIAL */}
-                        <Route path="material" element={<AdminForm tipo="material" />} />
-                        <Route path="material/editar" element={<AdminList tipo="material" />} />
+                        <Route path="material" element={<MaterialAdmin />} />
+                        <Route path="material/editar" element={<MaterialList />} />
 
                         {/* REPOSITORIO */}
-                        <Route path="repositorio" element={<AdminForm tipo="repositorio" />} />
-                        <Route path="repositorio/editar" element={<AdminList tipo="repositorio" />} />
+                        <Route path="repositorio" element={<RepositorioAdmin />} />
+                        <Route path="repositorio/editar" element={<RepositorioList />} />
 
                         {/* CEDOC */}
-                        <Route path="cedoc" element={<AdminForm tipo="cedoc" />} />
-                        <Route path="cedoc/editar" element={<AdminList tipo="cedoc" />} />
+                        <Route path="cedoc" element={<CedocAdmin />} />
+                        <Route path="cedoc/editar" element={<CedocList />} />
 
                         {/* EVENTOS */}
                         <Route path="eventos" element={<AdminForm tipo="evento" />} />
                         <Route path="eventos/editar" element={<AdminList tipo="eventos" />} />
 
                         {/* USUARIOS */}
-                        <Route path="usuarios" element={<AdminForm tipo="usuario" />} />
-                        <Route path="usuarios/listar" element={<AdminList tipo="usuarios" />} />
+                        <Route path="usuarios" element={<UsuariosAdmin />} />
+                        <Route path="usuarios/listar" element={<UsuariosList />} />
                     </Route>
 
                     {/* 404 */}
                     <Route path="*" element={
                         <div style={{ textAlign: 'center', padding: '6rem 2rem' }}>
                             <div style={{ fontSize: '5rem' }}>🎭</div>
-                            <h1 style={{ fontFamily: 'Bangers, cursive', fontSize: '3rem', letterSpacing: 3 }}>
+                            <h1 style={{ fontFamily: 'var(--font-titulo)', fontSize: '3rem', letterSpacing: 3 }}>
                                 Página no encontrada
                             </h1>
-                            <p style={{ color: '#5a3e2b', margin: '1rem 0 2rem' }}>
+                            <p style={{ color: 'var(--oscuro)', margin: '1rem 0 2rem' }}>
                                 Parece que esta calle no lleva al carnaval.
                             </p>
                             <a href="/" className="btn btn-primary">← Volver al inicio</a>

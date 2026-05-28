@@ -46,18 +46,12 @@ const TALLERES = [
   { img: '/img/Taller-card-figurines.webp', title: 'Figurines', desc: 'Diseño y creación de vestuarios, accesorios y personajes para presentaciones carnavaleras.' },
 ];
 
-const EVENTOS = [
-  { fecha: '19 hrs',  nombre: 'Ensayo General – Nono 380' },
-  { fecha: '23 Feb',  nombre: 'Desfile de Carnaval – Nono 380' },
-  { fecha: '23 Mar',  nombre: 'Cierre de Temporada – Nono 380' },
-];
-
 export default function Home() {
   useReveal();
 
   return (
       <>
-        <Ticker text="🥁 ¡20 años haciendo carnaval en la calle! &nbsp;&nbsp;🎺 Próximas fechas: 19 horas · 23 feb · 23 mar &nbsp;&nbsp; Nuevas inscripciones abiertas para Figurines &nbsp;&nbsp; Proyectos comunitarios activos en toda la ciudad &nbsp;&nbsp; Baile · Diseño de figurines · banda" />
+        <Ticker text="🥁 ¡20 años haciendo carnaval en la calle!   ·   🎺 Próximas fechas: 19 horas · 23 feb · 23 mar   ·   Nuevas inscripciones abiertas para Figurines   ·   Proyectos comunitarios activos en toda la ciudad   ·   Baile · Diseño de figurines · banda" />
 
         {/* HERO */}
         <section className="hero" id="inicio">
@@ -116,7 +110,7 @@ export default function Home() {
               <div className="años-badge-ring">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                   <path id="circ" d="M 100,100 m -80,0 a 80,80 0 1,1 160,0 a 80,80 0 1,1 -160,0" fill="none" />
-                  <text fontFamily="Bangers,cursive" fontSize="14" fill="#C0392B" letterSpacing="4">
+                  <text style={{ fontFamily: 'var(--font-titulo)', fill: 'var(--rojo)' }} fontSize="14" letterSpacing="4">
                     <textPath href="#circ">★ CHINCHINTIRAPIE ★ ESCUELA CARNAVALERA ★ DESDE 2004 ★ </textPath>
                   </text>
                 </svg>
@@ -125,7 +119,7 @@ export default function Home() {
             <div className="años-text reveal">
               <h2>Dos décadas haciendo <span>carnaval</span> con el barrio</h2>
               <p>
-                Chinchintirapie nació en las calles como una apuesta por recuperar la cultura popular
+                Chinchintirapié nació en las calles como una apuesta por recuperar la cultura popular
                 latinoamericana a través del cuerpo, el ritmo y la comunidad. En 20 años hemos formado
                 cientos de artistas, construido redes comunitarias y llevado el carnaval a cada rincón de la ciudad.
               </p>
@@ -148,7 +142,7 @@ export default function Home() {
         {/* TALLERES */}
         <section className="talleres-section" id="talleres">
           <div className="section-header reveal">
-            <h2 style={{ color: '#fff' }}>Nuestros <span style={{ color: 'var(--amarillo)' }}>Talleres</span></h2>
+            <h2 style={{ color: 'var(--blanco)' }}>Nuestros <span style={{ color: 'var(--amarillo)' }}>Talleres</span></h2>
             <div className="deco-line"><span>🥁</span></div>
             <p>Tres disciplinas que forman el corazón de la escuela carnavalera.</p>
           </div>

@@ -1,23 +1,62 @@
 import { useParams, Link } from 'react-router-dom';
-import { EDU_ITEMS } from '../data/educativoData';
+import { useState, useEffect } from 'react';
+import multimediaService from '../services/multimediaService';
 import PageHero from '../components/PageHero';
+import '../styles/MaterialEducativoDetail.css';
 
 export default function MaterialEducativoDetail() {
   const { id } = useParams();
-  const item = EDU_ITEMS.find((e) => e.id === id);
+  const [item, setItem] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  if (!item) return <div style={{ textAlign: 'center', padding: '5rem' }}><h2>Material no encontrado</h2><Link to="/material-educativo">Volver</Link></div>;
+  useEffect(() => {
+    const fetchItem = async () => {
+      try {
+        const data = await multimediaService.fetchById(id);
+        setItem(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchItem();
+  }, [id]);
+
+  if (loading) return (
+    <div className="page-empty">
+      <h2>Cargando...</h2>
+    </div>
+  );
+
+  if (error || !item) return (
+    <div className="page-empty">
+      <h2>Material no encontrado</h2>
+      <p>{error}</p>
+      <Link to="/material-educativo" className="back-link">Volver</Link>
+    </div>
+  );
 
   return (
     <>
-      <PageHero badge={`📚 ${item.type}`} title={item.title} description={`Nivel: ${item.level} | ${item.pages}`} />
-      <div style={{ maxWidth: 800, margin: '4rem auto', padding: '0 2rem', textAlign: 'center' }}>
-        <Link to="/material-educativo" style={{ display: 'inline-block', marginBottom: '2rem', color: 'var(--purpura)', fontWeight: 'bold', textDecoration: 'none' }}>← Volver a Material Educativo</Link>
-        <div style={{ background: 'var(--crema)', padding: '4rem', borderRadius: 16, border: '2px dashed #ccc' }}>
-          <div style={{ fontSize: '6rem', marginBottom: '1rem' }}>{item.emoji}</div>
-          <h3 style={{ fontFamily: 'Boogaloo, cursive', fontSize: '2rem', color: 'var(--oscuro)' }}>{item.title}</h3>
-          <p style={{ color: '#5a3e2b', margin: '1rem 0 2rem' }}>Este material es de libre distribución para fines pedagógicos.</p>
-          <button className="download-btn" style={{ margin: '0 auto' }}>⬇ Descargar gratis (PDF)</button>
+      <PageHero badge="📚 Material Educativo" title={item.title} description={item.author ? `Por ${item.author}` : ''} />
+      <div className="educativo-detail">
+        <Link to="/material-educativo" className="back-link">← Volver a Material Educativo</Link>
+        <div className="educativo-card">
+          <div className="educativo-icon" style={item.url ? { background: 'transparent', overflow: 'hidden' } : {}}>
+            {item.url ? (
+              <img src={item.url} alt={item.title} style={{ width: '100%', maxHeight: '400px', objectFit: 'cover', borderRadius: '12px' }} />
+            ) : (
+              "📚"
+            )}
+          </div>
+          <h3 className="educativo-title">{item.title}</h3>
+          <p className="educativo-copy">{item.description || 'Este material es de libre distribución para fines pedagógicos.'}</p>
+          <p style={{ color: '#999', fontSize: '.9rem' }}>
+            {item.author && `Por ${item.author}`}
+            {item.uploadedAt && ` · ${new Date(item.uploadedAt).toLocaleDateString()}`}
+          </p>
         </div>
       </div>
     </>

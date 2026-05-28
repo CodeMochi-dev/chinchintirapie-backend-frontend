@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Ticker from '../components/Ticker';
-
 import { Link } from 'react-router-dom';
-import { NEWS_ITEMS } from '../data/noticiasData';
+import { useReveal } from '../hooks/useReveal';
+import MediaThumbnail from '../components/MediaThumbnail';
+import articuloService from '../services/articuloService';
+import '../styles/Noticias.css';
 
 const CAROUSEL_SLIDES = [
   { src: '/img/img1.webp', caption: 'Homenaje Victor Jara' },
@@ -10,129 +12,78 @@ const CAROUSEL_SLIDES = [
   { src: '/img/img3.webp', caption: 'Aniversario Violeta Parra' },
 ];
 
-const CATEGORIES = ['Todas', 'Carnaval', 'Audiovisual', 'Talleres', 'Pedagogía', 'Eventos', 'Archivo'];
-
 export default function Noticias() {
   const [slide, setSlide] = useState(0);
-  const [filter, setFilter] = useState('Todas');
+  const [noticias, setNoticias] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  useReveal([noticias]);
 
-  const filtered = filter === 'Todas'
-    ? NEWS_ITEMS
-    : NEWS_ITEMS.filter((n) => n.category.toLowerCase() === filter.toLowerCase());
+  useEffect(() => {
+    const fetchNoticias = async () => {
+      try {
+        const data = await articuloService.fetchByType('NOTICIA');
+        setNoticias(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchNoticias();
+  }, []);
 
   return (
     <>
       <Ticker text="📰 Hitos Recientes · Carnaval · Talleres · Audiovisual · Archivo · Comunidad" />
 
-      {/* Encabezado */}
-      <div style={{
-        background: 'var(--morado-o)',
-        padding: '3rem 2rem 2rem',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'flex-end',
-        flexWrap: 'wrap',
-        gap: '1rem',
-        borderBottom: '4px solid var(--cian)',
-      }}>
+      <div className="noticias-header">
         <div>
-          <h1 style={{ fontFamily: 'Bangers, cursive', fontSize: 'clamp(2rem, 5vw, 3.5rem)', color: 'var(--amarillo-e)', letterSpacing: 3, lineHeight: 1 }}>
-            Hitos Recientes
-          </h1>
-          <p style={{ color: 'rgba(255,255,255,.7)', marginTop: '.4rem' }}>
-            Actividades, encuentros y memoria viva de la Escuela Carnavalera.
-          </p>
+          <h1>Hitos Recientes</h1>
+          <p>Actividades, encuentros y memoria viva de la Escuela Carnavalera.</p>
         </div>
-        <select
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          style={{
-            padding: '.6rem 1.2rem',
-            borderRadius: 8,
-            border: '2px solid var(--cian)',
-            background: 'var(--morado-o)',
-            color: '#fff',
-            fontFamily: 'Nunito, sans-serif',
-            fontWeight: 700,
-            fontSize: '.9rem',
-            cursor: 'pointer',
-          }}
-        >
-          {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
-        </select>
       </div>
 
-      {/* Mini Carrusel */}
-      <div style={{ position: 'relative', maxHeight: 400, overflow: 'hidden' }}>
+      <div className="noticias-carousel">
         <img
           src={CAROUSEL_SLIDES[slide].src}
           alt={CAROUSEL_SLIDES[slide].caption}
-          style={{ width: '100%', height: 400, objectFit: 'cover', display: 'block' }}
         />
-        <div style={{
-          position: 'absolute', inset: 0,
-          background: 'linear-gradient(to top, rgba(0,0,0,.7) 0%, transparent 60%)',
-          display: 'flex', alignItems: 'flex-end', padding: '2rem',
-        }}>
-          <h2 style={{ fontFamily: 'Bangers, cursive', fontSize: '2rem', color: '#fff', letterSpacing: 2 }}>
-            {CAROUSEL_SLIDES[slide].caption}
-          </h2>
+        <div className="noticias-carousel-overlay">
+          <h2>{CAROUSEL_SLIDES[slide].caption}</h2>
         </div>
-        <button onClick={() => setSlide((s) => (s - 1 + CAROUSEL_SLIDES.length) % CAROUSEL_SLIDES.length)}
-          style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,.5)', color: '#fff', border: 'none', borderRadius: '50%', width: 44, height: 44, cursor: 'pointer', fontSize: '1.2rem' }}>
+        <button
+          onClick={() => setSlide((s) => (s - 1 + CAROUSEL_SLIDES.length) % CAROUSEL_SLIDES.length)}
+          className="noticias-carousel-button left"
+          aria-label="Anterior"
+        >
           ‹
         </button>
-        <button onClick={() => setSlide((s) => (s + 1) % CAROUSEL_SLIDES.length)}
-          style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,.5)', color: '#fff', border: 'none', borderRadius: '50%', width: 44, height: 44, cursor: 'pointer', fontSize: '1.2rem' }}>
+        <button
+          onClick={() => setSlide((s) => (s + 1) % CAROUSEL_SLIDES.length)}
+          className="noticias-carousel-button right"
+          aria-label="Siguiente"
+        >
           ›
         </button>
       </div>
 
-      {/* Grid de Noticias */}
-      <section style={{ padding: '4rem 2rem', background: 'var(--crema)' }}>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-          gap: '1.5rem',
-          maxWidth: 1200,
-          margin: '0 auto',
-        }}>
-          {filtered.map((item) => (
-            <article key={item.title} style={{
-              borderRadius: 16,
-              overflow: 'hidden',
-              background: '#fff',
-              boxShadow: '0 8px 24px rgba(0,0,0,.08)',
-              transition: 'transform .3s',
-              position: 'relative',
-            }}>
-              {item.video ? (
-                <video autoPlay muted loop playsInline style={{ width: '100%', height: 200, objectFit: 'cover', display: 'block' }}>
-                  <source src={item.video} type="video/mp4" />
-                </video>
-              ) : (
-                <img src={item.img} alt={item.title} style={{ width: '100%', height: 200, objectFit: 'cover', display: 'block' }} loading="lazy" />
-              )}
-              <div style={{ padding: '1.2rem' }}>
-                <span style={{
-                  background: 'var(--rojo)', color: '#fff',
-                  borderRadius: 20, padding: '.2rem .7rem',
-                  fontSize: '.72rem', fontWeight: 800, letterSpacing: 1.5,
-                  textTransform: 'uppercase', display: 'inline-block', marginBottom: '.5rem',
-                }}>
-                  {item.category}
-                </span>
-                <h3 style={{ fontFamily: 'Boogaloo, cursive', fontSize: '1.2rem', color: 'var(--oscuro)', marginBottom: '.3rem' }}>{item.title}</h3>
-                {item.desc && <p style={{ color: '#5a3e2b', fontSize: '.88rem', lineHeight: 1.5, marginBottom: '.8rem' }}>{item.desc}</p>}
-                <Link to={`/noticias/${item.id}`} style={{ textDecoration: 'none' }}>
-                  <button style={{
-                    background: 'var(--morado-o)', color: 'var(--amarillo-e)',
-                    border: 'none', borderRadius: 8, padding: '.4rem 1rem',
-                    fontFamily: 'Nunito, sans-serif', fontWeight: 800, cursor: 'pointer',
-                    fontSize: '.85rem', width: '100%'
-                  }}>
-                    Ver noticia
-                  </button>
+      <section className="noticias-grid">
+        <div className="noticias-grid-inner">
+          {loading && <p>Cargando noticias...</p>}
+          {error && <p className="error">{error}</p>}
+          {!loading && !error && noticias.length === 0 && <p>No hay noticias disponibles.</p>}
+          {!loading && !error && noticias.map((item) => (
+            <article key={item.id} className="noticias-card reveal">
+              <div className="noticias-card-media" style={item.urlPhoto ? { padding: 0, overflow: 'hidden' } : {}}>
+                <MediaThumbnail url={item.urlPhoto} alt={item.title} typeEmoji="📰" />
+              </div>
+              <div className="noticias-card-body">
+                <span className="noticias-card-tag">Noticia</span>
+                <h3>{item.title}</h3>
+                {item.description && <p>{item.description}</p>}
+                <Link to={`/noticias/${item.id}`} className="link-reset">
+                  <button>Ver noticia</button>
                 </Link>
               </div>
             </article>

@@ -1,6 +1,7 @@
-// En desarrollo usa el proxy de vite.config.js ('/api/auth')
+// En desarrollo usa el proxy de vite.config.js ('/api')
 // En producción usará la URL del backend definida en VITE_API_URL
-const API_BASE = import.meta.env.VITE_API_URL || '/api/auth';
+let apiBase = import.meta.env.VITE_API_URL?.replace(/\/+$/, '') || '/api/auth';
+const API_BASE = apiBase;
 
 /**
  * Servicio de autenticación usando fetch nativo.
@@ -111,6 +112,51 @@ const authService = {
     };
 
     return fetch(url, { ...options, headers });
+  },
+
+  /**
+   * Solicitar recuperación de contraseña
+   * @param {string} email
+   * @returns {Promise<{message: string}>}
+   */
+  async forgotPassword(email) {
+    const response = await fetch(`${API_BASE}/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      const errorMsg = data.message || data.error || 'Error al procesar la solicitud';
+      throw new Error(errorMsg);
+    }
+
+    return data;
+  },
+
+  /**
+   * Restablecer contraseña con token
+   * @param {string} token
+   * @param {string} newPassword
+   * @returns {Promise<{message: string}>}
+   */
+  async resetPassword(token, newPassword) {
+    const response = await fetch(`${API_BASE}/reset-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, newPassword }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      const errorMsg = data.message || data.error || 'Error al restablecer la contraseña';
+      throw new Error(errorMsg);
+    }
+
+    return data;
   },
 };
 

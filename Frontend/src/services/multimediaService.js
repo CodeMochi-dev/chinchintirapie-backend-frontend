@@ -1,8 +1,26 @@
+import authService from './authService';
+
 // En desarrollo usa el proxy de vite.config.js ('/api')
 // En producción usará la URL del backend
-const API_BASE = import.meta.env.VITE_API_URL
-  ? import.meta.env.VITE_API_URL.replace(/\/auth\/?$/, '')
-  : '/api';
+let apiBase = '/api';
+if (import.meta.env.VITE_API_URL) {
+  let url = import.meta.env.VITE_API_URL.trim().replace(/\/+$/, '');
+  url = url.replace(/\/auth\/?$/, '');
+  if (!url.endsWith('/api')) {
+    apiBase = `${url}/api`;
+  } else {
+    apiBase = url;
+  }
+}
+const API_BASE = apiBase;
+
+const getAuthHeaders = () => {
+  const token = authService.getToken();
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+  };
+};
 
 /**
  * Servicio para multimedia (Repositorio, CEDOC, Material Educativo).
@@ -31,7 +49,8 @@ const multimediaService = {
    * Obtener multimedia por tipo (REPOSITORIO, CEDOC, MATERIAL_EDUCATIVO)
    */
   async fetchByType(type) {
-    const response = await fetch(`${API_BASE}/multimedia/type/${type}`);
+    const timestamp = new Date().getTime();
+    const response = await fetch(`${API_BASE}/multimedia/type/${type}?t=${timestamp}`);
     if (!response.ok) throw new Error('Error al obtener multimedia por tipo');
     return response.json();
   },
@@ -55,6 +74,43 @@ const multimediaService = {
    */
   async fetchMaterialEducativo() {
     return this.fetchByType('MATERIAL_EDUCATIVO');
+  },
+
+  /**
+   * Crear un nuevo multimedia
+   */
+  async create(data) {
+    const response = await fetch(`${API_BASE}/multimedia`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) throw new Error('Error al crear el multimedia');
+    return response.json();
+  },
+
+  /**
+   * Actualizar un multimedia
+   */
+  async update(id, data) {
+    const response = await fetch(`${API_BASE}/multimedia/${id}`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) throw new Error('Error al actualizar el multimedia');
+    return response.json();
+  },
+
+  /**
+   * Eliminar un multimedia
+   */
+  async delete(id) {
+    const response = await fetch(`${API_BASE}/multimedia/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
+    if (!response.ok) throw new Error('Error al eliminar el multimedia');
   },
 };
 
