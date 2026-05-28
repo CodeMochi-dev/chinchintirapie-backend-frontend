@@ -119,7 +119,7 @@ export default function Home() {
             <div className="años-text reveal">
               <h2>Dos décadas haciendo <span>carnaval</span> con el barrio</h2>
               <p>
-                Chinchintirapie nació en las calles como una apuesta por recuperar la cultura popular
+                Chinchintirapié nació en las calles como una apuesta por recuperar la cultura popular
                 latinoamericana a través del cuerpo, el ritmo y la comunidad. En 20 años hemos formado
                 cientos de artistas, construido redes comunitarias y llevado el carnaval a cada rincón de la ciudad.
               </p>

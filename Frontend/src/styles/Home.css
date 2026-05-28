@@ -1,14 +1,23 @@
 /* ── Hero ── */
 .hero {
   position: relative;
-  min-height: auto;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   overflow: hidden;
   border-top: 0px solid var(--crema);
   border-bottom: 7px solid var(--crema);
-  padding: 3rem 1rem 2rem;
+  padding: clamp(2rem, 5vw, 4rem) 1rem 2rem;
+  min-height: clamp(420px, 50vh, 620px);
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(190,0,60,0.55), rgba(190,0,60,0.25));
+  pointer-events: none;
+  z-index: 1;
 }
 
 .hero-bg {
@@ -17,6 +26,7 @@
   z-index: 0;
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
 }
 
 .hero-bg::after {
@@ -62,9 +72,9 @@
 .hero-content {
   position: relative;
   z-index: 1;
-  width: min(100%, 980px);
-  max-width: 100%;
-  padding: 3rem 1.25rem 2rem;
+  min-width: 0;
+  max-width: 720px;
+  padding: clamp(1.5rem, 3vw, 3rem) 1.25rem 0;
 }
 
 .hero-badge {
@@ -88,6 +98,9 @@
   color: #fff;
   letter-spacing: 0px;
   margin-bottom: 1rem;
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .hero-title em {
@@ -100,6 +113,8 @@
   line-height: 1.7;
   max-width: 100%;
   margin-bottom: 1.75rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .hero-btns {
@@ -119,6 +134,27 @@
   letter-spacing: 2px;
   text-transform: uppercase;
   animation: bounce 2s ease-in-out infinite;
+}
+
+@media (max-width: 920px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 2rem 1rem 1.5rem;
+  }
+
+  .hero-bg {
+    order: 2;
+    min-height: clamp(240px, 32vh, 380px);
+    width: 100%;
+  }
+
+  .hero-content {
+    padding: 0;
+  }
+
+  .scroll-hint {
+    bottom: 1rem;
+  }
 }
 
 .scroll-hint::after {
@@ -279,6 +315,11 @@
   line-height: 1.8;
   font-size: 1rem;
   margin-bottom: 1rem;
+}
+@media (max-width: 900px) {
+  .años-text {
+    margin-top: 2rem;
+  }
 }
 
 .stats-row {
