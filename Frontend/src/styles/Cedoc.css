@@ -1,10 +1,15 @@
 .cedoc-layout {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 3rem;
+  grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+  gap: clamp(1.5rem, 2vw, 3rem);
   max-width: 1200px;
   margin: 0 auto;
   padding: 4rem 1rem;
+  min-width: 0;
+}
+.cedoc-main,
+.cedoc-sidebar {
+  min-width: 0;
 }
 .cedoc-main section { margin-bottom: 3rem; }
 .cedoc-main h2 {
@@ -27,6 +32,8 @@
   display: flex;
   gap: 1.2rem;
   align-items: flex-start;
+  flex-wrap: wrap;
+  min-width: 0;
 }
 .article-card:hover {
   transform: translateX(4px);
@@ -35,30 +42,40 @@
 .article-icon {
   font-size: 2.5rem;
   flex-shrink: 0;
-  width: 60px;
-  height: 60px;
+  width: clamp(60px, 12vw, 120px);
+  min-width: 0;
+  height: auto;
+  aspect-ratio: 1 / 1;
   background: linear-gradient(135deg, var(--rojo), var(--naranja));
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+.article-body {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
 .article-body h3 {
   font-family: var(--font-titulo);
   font-size: 1.25rem;
   color: var(--oscuro);
   margin-bottom: .3rem;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 .article-body p {
   font-size: .88rem;
   color: #6a4c35;
   line-height: 1.6;
   margin-bottom: .6rem;
+  overflow-wrap: anywhere;
 }
 .article-meta {
   display: flex;
   gap: .7rem;
   flex-wrap: wrap;
+  min-width: 0;
 }
 .meta-tag {
   background: var(--crema);
@@ -255,6 +272,23 @@
   color: #fff;
   border-color: var(--rojo);
   box-shadow: 0 4px 12px rgba(190, 0, 60, 0.3);
+}
+
+@media (max-width: 860px) {
+  .cedoc-layout {
+    grid-template-columns: 1fr;
+    padding: 2rem 1rem;
+  }
+
+  .article-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .article-icon {
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 /* ── Sidebar Downloads & Tags ── */
