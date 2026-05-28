@@ -29,7 +29,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final EmailService emailService;
 
-    @Value("${frontend.url:http://localhost:5173}")
+    @Value("${frontend.url}")
     private String frontendUrl;
 
     @Transactional
