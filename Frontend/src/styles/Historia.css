@@ -89,7 +89,7 @@
 }
 
 .story-grid {
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
 
 .story-card {
@@ -110,18 +110,6 @@
   color: var(--oscuro);
   line-height: 1.7;
   font-size: .95rem;
-}
-
-.story-card-feature {
-  border: 2px solid var(--rojo);
-}
-
-.accent-card {
-  border: 2px solid var(--dorado);
-}
-
-.wide-card {
-  grid-column: span 2;
 }
 
 .mission-grid {

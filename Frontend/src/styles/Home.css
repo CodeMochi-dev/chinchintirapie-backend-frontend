@@ -1,12 +1,14 @@
 /* ── Hero ── */
 .hero {
   position: relative;
-  min-height: 92vh;
+  min-height: auto;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: center;
   overflow: hidden;
   border-top: 0px solid var(--crema);
-  border-bottom: 7px solid var(--crema)
+  border-bottom: 7px solid var(--crema);
+  padding: 3rem 1rem 2rem;
 }
 
 .hero-bg {
@@ -26,24 +28,29 @@
   border-radius: 50%;
   opacity: .12;
   animation: float 6s ease-in-out infinite;
+  max-width: 45vw;
+  max-height: 45vw;
 }
 
 .float-shape:nth-child(2) {
-  width: 300px; height: 300px;
+  width: min(280px, 35vw);
+  height: min(280px, 35vw);
   background: var(--naranja);
-  top: 10%; right: 15%;
+  top: 10%; right: 10%;
   animation-delay: 0s;
 }
 .float-shape:nth-child(3) {
-  width: 180px; height: 180px;
+  width: min(180px, 22vw);
+  height: min(180px, 22vw);
   background: var(--amarillo);
-  bottom: 20%; right: 30%;
+  bottom: 18%; right: 24%;
   animation-delay: 2s;
 }
 .float-shape:nth-child(4) {
-  width: 120px; height: 120px;
+  width: min(120px, 18vw);
+  height: min(120px, 18vw);
   background: var(--rojo);
-  top: 50%; right: 8%;
+  top: 50%; right: 6%;
   animation-delay: 4s;
 }
 
@@ -55,41 +62,44 @@
 .hero-content {
   position: relative;
   z-index: 1;
-  max-width: 1000px;
-  padding: 4rem 2rem 4rem 6vw;
+  width: min(100%, 980px);
+  max-width: 100%;
+  padding: 3rem 1.25rem 2rem;
 }
 
 .hero-badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: var(--amarillo);
   color: var(--oscuro);
   font-family: var(--font-titulo);
-  font-size: 1.3rem;
-  letter-spacing: 3px;
-  padding: .35rem 1rem;
+  font-size: clamp(1rem, 3vw, 1.3rem);
+  letter-spacing: 2px;
+  padding: .35rem .9rem;
   border-radius: 20px;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1rem;
 }
 
 .hero-title {
   font-family: var(--font-titulo);
-  font-size: clamp(2.5rem, 4.5vw, 5rem);
-  line-height: 1.15;
+  font-size: clamp(2.5rem, 7vw, 4.5rem);
+  line-height: 1.1;
   color: #fff;
   letter-spacing: 0px;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1rem;
 }
 
 .hero-title em {
-  white-space: nowrap;  /* ← evita que "20 años" se separe de "de Carnaval" */
+  white-space: normal;
 }
 
 .hero-sub {
-  color: rgba(255,255,255,.85);
-  font-size: 1.35rem;
+  color: rgba(255,255,255,.9);
+  font-size: clamp(1rem, 3vw, 1.35rem);
   line-height: 1.7;
-  max-width: 520px;
-  margin-bottom: 2rem;
+  max-width: 100%;
+  margin-bottom: 1.75rem;
 }
 
 .hero-btns {
@@ -100,13 +110,13 @@
 
 .scroll-hint {
   position: absolute;
-  bottom: 2.5rem;
+  bottom: 1.5rem;
   left: 50%;
   transform: translateX(-50%);
-  color: rgba(255,255,255,.5);
-  font-size: .8rem;
+  color: rgba(255,255,255,.6);
+  font-size: .82rem;
   font-weight: 700;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   text-transform: uppercase;
   animation: bounce 2s ease-in-out infinite;
 }
@@ -420,12 +430,72 @@
 }
 
 @media (max-width: 900px) {
+  .hero {
+    min-height: auto;
+    padding: 3rem 1rem 2rem;
+  }
+
+  .hero-content {
+    padding: 2.5rem 1rem 1.5rem;
+  }
+
+  .hero-title {
+    font-size: clamp(2.4rem, 7vw, 3.8rem);
+  }
+
+  .hero-sub {
+    font-size: 1.1rem;
+  }
+
+  .cards-section,
+  .años-section,
+  .talleres-section,
+  .eventos-section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .cards-grid,
+  .talleres-grid,
+  .años-inner,
+  .eventos-inner {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .cards-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.2rem;
+  }
+
+  .card-img {
+    height: auto;
+    aspect-ratio: 4 / 3;
+    min-height: 160px;
+  }
+
+  .card-body {
+    padding: 1.2rem;
+  }
+
   .años-inner { grid-template-columns: 1fr; }
-  .años-number { font-size: 8rem; }
-  .eventos-inner { flex-direction: column; gap: 2rem; }
+  .años-number { font-size: 7rem; }
+  .eventos-inner { flex-direction: column; gap: 1.5rem; }
+  .eventos-text h2 { font-size: 2rem; }
+  .evento-item { flex-direction: column; align-items: stretch; gap: .75rem; }
+  .evento-fecha { min-width: auto; width: fit-content; }
 }
 
 @media (max-width: 640px) {
-  .hero-content { padding: 3rem 1.5rem; }
+  .hero-content { padding: 2rem 1rem 1.5rem; }
   .hero-btns { flex-direction: column; }
+  .hero-title { font-size: clamp(2.2rem, 8vw, 3.2rem); }
+  .hero-sub { font-size: 1rem; }
+  .card-img { min-height: 140px; }
+  .card-body { padding: 1rem; }
+  .cards-grid { gap: 1rem; }
+  .talleres-grid { gap: 1rem; }
+  .stats-row { flex-direction: column; gap: 1rem; }
+  .taller-card h3 { font-size: 1.5rem; }
+  .evento-item { padding: 1rem; }
 }
