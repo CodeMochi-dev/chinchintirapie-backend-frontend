@@ -8,19 +8,32 @@
 }
 .organizacion-intro-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
+  grid-template-columns: 1fr;
+  gap: 2rem;
   align-items: center;
 }
+
+@media (min-width: 768px) {
+  .organizacion-intro-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+}
+
 .organizacion-text {
   color: var(--oscuro);
   line-height: 1.9;
   font-size: 1rem;
 }
+
 .organizacion-hero-img {
   width: 100%;
+  max-width: 100%;
+  height: auto;
   border-radius: 20px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  margin: 0 auto;
+  display: block;
 }
 .organizacion-body {
   padding: 4rem 2rem;

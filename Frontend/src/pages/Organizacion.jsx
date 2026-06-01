@@ -89,6 +89,11 @@ export default function Organizacion() {
       <main className="organizacion-page">
         <section className="organizacion-intro reveal">
           <div className="organizacion-intro-grid">
+            <img
+              src="/img/organizacion-.webp"
+              alt="Miembros de Chinchintirapie reunidos"
+              className="organizacion-hero-img"
+            />
             <p className="organizacion-text">
               En la calle nacimos y en la calle vibramos. Lo que el público experimenta como una explosión
               visceral de energía es el resultado de una maquinaria cultural perfectamente engranada.{' '}
@@ -96,11 +101,6 @@ export default function Organizacion() {
               La autogestión, cuando se hace con disciplina, crea un modelo de trabajo capaz de inspirar
               a cualquier colectivo artístico.
             </p>
-            <img
-              src="/img/organizacion-.webp"
-              alt="Miembros de Chinchintirapie reunidos"
-              className="organizacion-hero-img"
-            />
           </div>
         </section>
 
